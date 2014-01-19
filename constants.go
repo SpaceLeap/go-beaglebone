@@ -107,6 +107,87 @@ var (
 	P9_46 = PinInfo{"DGND", "P9_46", 0, -1, -1}
 )
 
+var (
+	GPIO1_6    = &P8_3
+	GPIO1_7    = &P8_4
+	GPIO1_2    = &P8_5
+	GPIO1_3    = &P8_6
+	TIMER4     = &P8_7
+	TIMER7     = &P8_8
+	TIMER5     = &P8_9
+	TIMER6     = &P8_10
+	GPIO1_13   = &P8_11
+	GPIO1_12   = &P8_12
+	EHRPWM2B   = &P8_13
+	GPIO0_26   = &P8_14
+	GPIO1_15   = &P8_15
+	GPIO1_14   = &P8_16
+	GPIO0_27   = &P8_17
+	GPIO2_1    = &P8_18
+	EHRPWM2A   = &P8_19
+	GPIO1_31   = &P8_20
+	GPIO1_30   = &P8_21
+	GPIO1_5    = &P8_22
+	GPIO1_4    = &P8_23
+	GPIO1_1    = &P8_24
+	GPIO1_0    = &P8_25
+	GPIO1_29   = &P8_26
+	GPIO2_22   = &P8_27
+	GPIO2_24   = &P8_28
+	GPIO2_23   = &P8_29
+	GPIO2_25   = &P8_30
+	UART5_CTSN = &P8_31
+	UART5_RTSN = &P8_32
+	UART4_RTSN = &P8_33
+	UART3_RTSN = &P8_34
+	UART4_CTSN = &P8_35
+	UART3_CTSN = &P8_36
+	UART5_TXD  = &P8_37
+	UART5_RXD  = &P8_38
+	GPIO2_12   = &P8_39
+	GPIO2_13   = &P8_40
+	GPIO2_10   = &P8_41
+	GPIO2_11   = &P8_42
+	GPIO2_8    = &P8_43
+	GPIO2_9    = &P8_44
+	GPIO2_6    = &P8_45
+	GPIO2_7    = &P8_46
+	PWR_BUT    = &P9_9
+	SYS_RESETn = &P9_10
+	UART4_RXD  = &P9_11
+	GPIO1_28   = &P9_12
+	UART4_TXD  = &P9_13
+	EHRPWM1A   = &P9_14
+	GPIO1_16   = &P9_15
+	EHRPWM1B   = &P9_16
+	I2C1_SCL   = &P9_17
+	I2C1_SDA   = &P9_18
+	I2C2_SCL   = &P9_19
+	I2C2_SDA   = &P9_20
+	UART2_TXD  = &P9_21
+	UART2_RXD  = &P9_22
+	GPIO1_17   = &P9_23
+	UART1_TXD  = &P9_24
+	GPIO3_21   = &P9_25
+	UART1_RXD  = &P9_26
+	GPIO3_19   = &P9_27
+	SPI1_CS0   = &P9_28
+	SPI1_D0    = &P9_29
+	SPI1_D1    = &P9_30
+	SPI1_SCLK  = &P9_31
+	VDD_ADC    = &P9_32
+	AIN4       = &P9_33
+	GNDA_ADC   = &P9_34
+	AIN6       = &P9_35
+	AIN5       = &P9_36
+	AIN2       = &P9_37
+	AIN3       = &P9_38
+	AIN0       = &P9_39
+	AIN1       = &P9_40
+	CLKOUT2    = &P9_41
+	GPIO0_7    = &P9_42
+)
+
 //Table generated based on https://raw.github.com/jadonk/bonescript/master/node_modules/bonescript/bone.js
 var pinsTable = []*PinInfo{
 	&USR0,
