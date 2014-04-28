@@ -3,6 +3,8 @@ go-beaglebone
 
 Go package for the BeagleBone open source hardware
 
+Also check out https://github.com/SpaceLeap/go-embedded
+
 This package builds on top of github.com/SpaceLeap/go-embedded and offers BeagleBone specific constants, variables and initializes go-embedded for the BeagleBone:
 
 ```go
