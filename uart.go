@@ -5,7 +5,7 @@ import (
 	"io"
 
 	"github.com/SpaceLeap/go-embedded"
-	"github.com/huin/goserial"
+	"github.com/ungerik/goserial"
 )
 
 const (
@@ -36,10 +36,10 @@ const (
 type UARTByteSize goserial.ByteSize
 
 const (
-	UART_BYTESIZE_8 = UARTByteSize(goserial.Byte8)
 	UART_BYTESIZE_5 = UARTByteSize(goserial.Byte5)
 	UART_BYTESIZE_6 = UARTByteSize(goserial.Byte6)
 	UART_BYTESIZE_7 = UARTByteSize(goserial.Byte7)
+	UART_BYTESIZE_8 = UARTByteSize(goserial.Byte8)
 )
 
 type UARTStopBits goserial.StopBits
