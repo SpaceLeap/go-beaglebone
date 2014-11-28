@@ -6,6 +6,7 @@ type PinInfo struct {
 	GPIO       int
 	PWMMuxMode int
 	AInNr      int
+	// PinMuxFilename string
 }
 
 var (

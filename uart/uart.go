@@ -2,7 +2,7 @@ package uart
 
 import (
 	"fmt"
-	"io"
+	"time"
 
 	"github.com/SpaceLeap/go-embedded"
 	"github.com/ungerik/goserial"
@@ -16,6 +16,20 @@ const (
 	BAUD_9600   = 9600
 )
 
+// UART wraps "github.com/huin/goserial"
+type UART struct {
+	*goserial.Connection
+	Nr UARTNr
+}
+
+func (uart *UART) Close() error {
+	err := uart.Connection.Close()
+	if err != nil {
+		return err
+	}
+	return embedded.UnloadDeviceTree(fmt.Sprintf("ADAFRUIT-UART%d", uart.Nr))
+}
+
 type UARTNr int
 
 const (
@@ -25,14 +39,14 @@ const (
 	UART5 UARTNr = 5
 )
 
-func (nr UARTNr) Open(baud int, size ByteSize, parity ParityMode, stopBits StopBits) (*UART, error) {
+func (nr UARTNr) Open(baud int, size ByteSize, parity ParityMode, stopBits StopBits, timeout time.Duration) (*UART, error) {
 	dt := fmt.Sprintf("ADAFRUIT-UART%d", nr)
 	err := embedded.LoadDeviceTree(dt)
 	if err != nil {
 		return nil, err
 	}
 
-	uart := &UART{nr: nr}
+	uart := &UART{Nr: nr}
 
 	config := &goserial.Config{
 		Name:     fmt.Sprintf("/dev/ttyO%d", nr),
@@ -40,8 +54,9 @@ func (nr UARTNr) Open(baud int, size ByteSize, parity ParityMode, stopBits StopB
 		Size:     goserial.ByteSize(size),
 		Parity:   goserial.ParityMode(parity),
 		StopBits: goserial.StopBits(stopBits),
+		Timeout:  timeout,
 	}
-	uart.serial, err = goserial.OpenPort(config)
+	uart.Connection, err = goserial.OpenPort(config)
 	if err != nil {
 		return nil, err
 	}
@@ -79,25 +94,3 @@ const (
 // 	UART4: {"UART4", "/dev/ttyO4", "ADAFRUIT-UART4", "P9_11", "P9_13"},
 // 	UART5: {"UART5", "/dev/ttyO5", "ADAFRUIT-UART5", "P8_38", "P8_37"},
 // }
-
-// UART wraps "github.com/huin/goserial"
-type UART struct {
-	nr     UARTNr
-	serial io.ReadWriteCloser
-}
-
-func (uart *UART) Read(p []byte) (n int, err error) {
-	return uart.serial.Read(p)
-}
-
-func (uart *UART) Write(p []byte) (n int, err error) {
-	return uart.serial.Write(p)
-}
-
-func (uart *UART) Close() error {
-	err := uart.serial.Close()
-	if err != nil {
-		return err
-	}
-	return embedded.UnloadDeviceTree(fmt.Sprintf("ADAFRUIT-UART%d", uart.nr))
-}
