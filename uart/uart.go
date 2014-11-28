@@ -1,4 +1,4 @@
-package beaglebone
+package uart
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 const (
-	UART_BAUD_115200 = 115200
-	UART_BAUD_57600  = 57600
-	UART_BAUD_38400  = 38400
-	UART_BAUD_19200  = 19200
-	UART_BAUD_9600   = 9600
+	BAUD_115200 = 115200
+	BAUD_57600  = 57600
+	BAUD_38400  = 38400
+	BAUD_19200  = 19200
+	BAUD_9600   = 9600
 )
 
 type UARTNr int
@@ -25,28 +25,28 @@ const (
 	UART5 UARTNr = 5
 )
 
-type UARTParityMode goserial.ParityMode
+type ParityMode goserial.ParityMode
 
 const (
-	UART_PARITY_NONE = UARTParityMode(goserial.ParityNone)
-	UART_PARITY_EVEN = UARTParityMode(goserial.ParityEven)
-	UART_PARITY_ODD  = UARTParityMode(goserial.ParityOdd)
+	PARITY_NONE = ParityMode(goserial.ParityNone)
+	PARITY_EVEN = ParityMode(goserial.ParityEven)
+	PARITY_ODD  = ParityMode(goserial.ParityOdd)
 )
 
-type UARTByteSize goserial.ByteSize
+type ByteSize goserial.ByteSize
 
 const (
-	UART_BYTESIZE_5 = UARTByteSize(goserial.Byte5)
-	UART_BYTESIZE_6 = UARTByteSize(goserial.Byte6)
-	UART_BYTESIZE_7 = UARTByteSize(goserial.Byte7)
-	UART_BYTESIZE_8 = UARTByteSize(goserial.Byte8)
+	BYTESIZE_5 = ByteSize(goserial.Byte5)
+	BYTESIZE_6 = ByteSize(goserial.Byte6)
+	BYTESIZE_7 = ByteSize(goserial.Byte7)
+	BYTESIZE_8 = ByteSize(goserial.Byte8)
 )
 
-type UARTStopBits goserial.StopBits
+type StopBits goserial.StopBits
 
 const (
-	UART_STOPBITS_1 = UARTStopBits(goserial.StopBits1)
-	UART_STOPBITS_2 = UARTStopBits(goserial.StopBits2)
+	STOPBITS_1 = StopBits(goserial.StopBits1)
+	STOPBITS_2 = StopBits(goserial.StopBits2)
 )
 
 // var uartTable = map[UARTName]uartInfo{
@@ -62,7 +62,7 @@ type UART struct {
 	serial io.ReadWriteCloser
 }
 
-func NewUART(nr UARTNr, baud int, size UARTByteSize, parity UARTParityMode, stopBits UARTStopBits) (*UART, error) {
+func (nr UARTNr) Open(baud int, size ByteSize, parity ParityMode, stopBits StopBits) (*UART, error) {
 	dt := fmt.Sprintf("ADAFRUIT-UART%d", nr)
 	err := embedded.LoadDeviceTree(dt)
 	if err != nil {
