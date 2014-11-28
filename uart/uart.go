@@ -25,6 +25,30 @@ const (
 	UART5 UARTNr = 5
 )
 
+func (nr UARTNr) Open(baud int, size ByteSize, parity ParityMode, stopBits StopBits) (*UART, error) {
+	dt := fmt.Sprintf("ADAFRUIT-UART%d", nr)
+	err := embedded.LoadDeviceTree(dt)
+	if err != nil {
+		return nil, err
+	}
+
+	uart := &UART{nr: nr}
+
+	config := &goserial.Config{
+		Name:     fmt.Sprintf("/dev/ttyO%d", nr),
+		Baud:     baud,
+		Size:     goserial.ByteSize(size),
+		Parity:   goserial.ParityMode(parity),
+		StopBits: goserial.StopBits(stopBits),
+	}
+	uart.serial, err = goserial.OpenPort(config)
+	if err != nil {
+		return nil, err
+	}
+
+	return uart, nil
+}
+
 type ParityMode goserial.ParityMode
 
 const (
@@ -60,30 +84,6 @@ const (
 type UART struct {
 	nr     UARTNr
 	serial io.ReadWriteCloser
-}
-
-func (nr UARTNr) Open(baud int, size ByteSize, parity ParityMode, stopBits StopBits) (*UART, error) {
-	dt := fmt.Sprintf("ADAFRUIT-UART%d", nr)
-	err := embedded.LoadDeviceTree(dt)
-	if err != nil {
-		return nil, err
-	}
-
-	uart := &UART{nr: nr}
-
-	config := &goserial.Config{
-		Name:     fmt.Sprintf("/dev/ttyO%d", nr),
-		Baud:     baud,
-		Size:     goserial.ByteSize(size),
-		Parity:   goserial.ParityMode(parity),
-		StopBits: goserial.StopBits(stopBits),
-	}
-	uart.serial, err = goserial.OpenPort(config)
-	if err != nil {
-		return nil, err
-	}
-
-	return uart, nil
 }
 
 func (uart *UART) Read(p []byte) (n int, err error) {
