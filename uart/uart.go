@@ -8,17 +8,35 @@ import (
 	"github.com/ungerik/goserial"
 )
 
+type UARTNr int
+
 const (
-	BAUD_115200 = 115200
-	BAUD_57600  = 57600
-	BAUD_38400  = 38400
-	BAUD_19200  = 19200
-	BAUD_9600   = 9600
+	UART1 UARTNr = 1
+	UART2 UARTNr = 2
+	UART4 UARTNr = 4
+	UART5 UARTNr = 5
 )
 
-// UART wraps "github.com/huin/goserial"
+func (nr UARTNr) Open(baud serial.Baud, byteSize serial.ByteSize, parity serial.ParityMode, stopBits serial.StopBits, readTimeout time.Duration) (*UART, error) {
+	dt := fmt.Sprintf("ADAFRUIT-UART%d", nr)
+	err := embedded.LoadDeviceTree(dt)
+	if err != nil {
+		return nil, err
+	}
+
+	name := fmt.Sprintf("/dev/ttyO%d", nr)
+
+	uart := &UART{Nr: nr}
+	uart.Connection, err = serial.Open(name, baud, byteSize, parity, stopBits, readTimeout)
+	if err != nil {
+		return nil, err
+	}
+
+	return uart, nil
+}
+
 type UART struct {
-	*goserial.Connection
+	*serial.Connection
 	Nr UARTNr
 }
 
@@ -29,64 +47,6 @@ func (uart *UART) Close() error {
 	}
 	return embedded.UnloadDeviceTree(fmt.Sprintf("ADAFRUIT-UART%d", uart.Nr))
 }
-
-type UARTNr int
-
-const (
-	UART1 UARTNr = 1
-	UART2 UARTNr = 2
-	UART4 UARTNr = 4
-	UART5 UARTNr = 5
-)
-
-func (nr UARTNr) Open(baud int, size ByteSize, parity ParityMode, stopBits StopBits, timeout time.Duration) (*UART, error) {
-	dt := fmt.Sprintf("ADAFRUIT-UART%d", nr)
-	err := embedded.LoadDeviceTree(dt)
-	if err != nil {
-		return nil, err
-	}
-
-	uart := &UART{Nr: nr}
-
-	config := &goserial.Config{
-		Name:     fmt.Sprintf("/dev/ttyO%d", nr),
-		Baud:     baud,
-		Size:     goserial.ByteSize(size),
-		Parity:   goserial.ParityMode(parity),
-		StopBits: goserial.StopBits(stopBits),
-		Timeout:  timeout,
-	}
-	uart.Connection, err = goserial.OpenPort(config)
-	if err != nil {
-		return nil, err
-	}
-
-	return uart, nil
-}
-
-type ParityMode goserial.ParityMode
-
-const (
-	PARITY_NONE = ParityMode(goserial.ParityNone)
-	PARITY_EVEN = ParityMode(goserial.ParityEven)
-	PARITY_ODD  = ParityMode(goserial.ParityOdd)
-)
-
-type ByteSize goserial.ByteSize
-
-const (
-	BYTESIZE_5 = ByteSize(goserial.Byte5)
-	BYTESIZE_6 = ByteSize(goserial.Byte6)
-	BYTESIZE_7 = ByteSize(goserial.Byte7)
-	BYTESIZE_8 = ByteSize(goserial.Byte8)
-)
-
-type StopBits goserial.StopBits
-
-const (
-	STOPBITS_1 = StopBits(goserial.StopBits1)
-	STOPBITS_2 = StopBits(goserial.StopBits2)
-)
 
 // var uartTable = map[UARTName]uartInfo{
 // 	UART1: {"UART1", "/dev/ttyO1", "ADAFRUIT-UART1", "P9_26", "P9_24"},
