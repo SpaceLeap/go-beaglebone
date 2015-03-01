@@ -17,9 +17,17 @@ const (
 	UART5 UARTNr = 5
 )
 
-func (nr UARTNr) Open(baud serial.Baud, byteSize serial.ByteSize, parity serial.ParityMode, stopBits serial.StopBits, readTimeout time.Duration) (*UART, error) {
+func (nr UARTNr) AquirePort() error {
 	dt := fmt.Sprintf("ADAFRUIT-UART%d", nr)
-	err := embedded.LoadDeviceTree(dt)
+	return embedded.LoadDeviceTree(dt)
+}
+
+func (nr UARTNr) ReleasePort() error {
+	return embedded.UnloadDeviceTree(fmt.Sprintf("ADAFRUIT-UART%d", nr))
+}
+
+func (nr UARTNr) Open(baud serial.Baud, byteSize serial.ByteSize, parity serial.ParityMode, stopBits serial.StopBits, readTimeout time.Duration) (*UART, error) {
+	err := nr.AquirePort()
 	if err != nil {
 		return nil, err
 	}
@@ -45,7 +53,8 @@ func (uart *UART) Close() error {
 	if err != nil {
 		return err
 	}
-	return embedded.UnloadDeviceTree(fmt.Sprintf("ADAFRUIT-UART%d", uart.Nr))
+
+	return uart.Nr.ReleasePort()
 }
 
 // var uartTable = map[UARTName]uartInfo{
